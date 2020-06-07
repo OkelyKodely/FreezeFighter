@@ -42,6 +42,7 @@ public class AlphaFighter implements KeyListener {
             boolean isBlockingFriend = false;;
             
             boolean isBlockingEnemy = false;;
+    private int bbb = 0; /*user input pressied*/
     private String key = ""; /*user input pressied*/
     private String ky = ""; /*user input pressied*/
     private String kk = ""; /*user input pressied*/
@@ -199,6 +200,40 @@ public class AlphaFighter implements KeyListener {
             };
             t.start();
         }
+        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+            yx = "hk";
+        }
+        if(e.getKeyCode() == KeyEvent.VK_T) {
+            if(yx.equals("hk")) {
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while(true) {
+                            if(bbb > 0 && bbb < 40) {
+                                drawHKick1();
+                            }
+                            if(bbb > 40 && bbb < 80) {
+                                drawHKick2();
+                            }
+                            if(bbb > 80 && bbb < 120) {
+                                drawHKick1();
+                            }
+                            try {
+                                Thread.sleep(2);
+                            } catch(Exception e) {}
+                            x+=2;
+                            bbb++;
+                            if(bbb > 125) {
+                                bbb = 0;
+                                yx = "";
+                                return;
+                            }
+                        }
+                    }
+                });
+                t.start();
+            }
+        }
         if(e.getKeyCode() == KeyEvent.VK_DOWN) {
             yx = "dp";
         }
@@ -211,7 +246,7 @@ public class AlphaFighter implements KeyListener {
                                 try {
 clear();
                                 Random rnd = new Random();
-                                int a = rnd.nextInt(6);
+                                int a = rnd.nextInt(4);
                                 if(a == 0) {
                                     drawBlockEnemy();
                                 } else if(a == 1) {
@@ -405,6 +440,7 @@ clear();
             };
             t.start();
         }
+        y = 500;
     }
     
     public void drawEnemy() {
@@ -528,7 +564,7 @@ clear();
                         try {
                             try {
                                 Random rnd = new Random();
-                                int a = rnd.nextInt(6);
+                                int a = rnd.nextInt(4);
                                 if(a == 0) {
                                     drawBlockEnemy();
                                 } else if(a == 1) {
@@ -613,7 +649,57 @@ clear();
             Image i = ImageIO.read(getClass().getResourceAsStream("kickb.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(6);
+            int a = rnd.nextInt(4);
+            if(a == 0) {
+                drawBlockEnemy();
+            } else if(a == 1) {
+                drawBlockDownEnemy();
+            }
+            isBlockingFriend = false;
+            if(!isBlockingEnemy)
+            if(x >= x2 - 50 && x <= x2 + 100 - 50 &&
+                    y >= y2 && y <= y2 + 300)
+                livesEnemy -= 6;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawHKick1() {
+        /* use the image that is the jump/kick picture
+        */
+        try {
+clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("hkick1.png"));
+            g.drawImage(i, x, y, 100, 300, null);
+            Random rnd = new Random();
+            int a = rnd.nextInt(4);
+            if(a == 0) {
+                drawBlockEnemy();
+            } else if(a == 1) {
+                drawBlockDownEnemy();
+            }
+            isBlockingFriend = false;
+            if(!isBlockingEnemy)
+            if(x >= x2 - 50 && x <= x2 + 100 - 50 &&
+                    y >= y2 && y <= y2 + 300)
+                livesEnemy -= 6;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawHKick2() {
+        /* use the image that is the jump/kick picture
+        */
+        try {
+clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("hkick2.png"));
+            g.drawImage(i, x, y, 100, 300, null);
+            Random rnd = new Random();
+            int a = rnd.nextInt(4);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
@@ -705,7 +791,7 @@ clear();
             Image i = ImageIO.read(getClass().getResourceAsStream("punch.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(6);
+            int a = rnd.nextInt(4);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
@@ -745,7 +831,7 @@ clear();
             Image i = ImageIO.read(getClass().getResourceAsStream("jumpkick.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(6);
+            int a = rnd.nextInt(4);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
@@ -1003,7 +1089,7 @@ clear();
                     Image i = ImageIO.read(getClass().getResourceAsStream("stand.png"));
                     g.drawImage(i, x, y, 100, 300, null);
                 } catch(Exception e) {
-                    e.printStackTrace();
+                    
                 }
             }
         };
