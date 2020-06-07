@@ -1,8 +1,10 @@
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Panel;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -127,10 +129,10 @@ public class AlphaFighter implements KeyListener {
                                     if(kyx.equals("r")) {
                                         clear();
                                         x+=1;
-                                        if(baseball < 95)
-                                            y-=2;
-                                        if(baseball > 95)
-                                            y+=2;
+                                        if(baseball < 45)
+                                            y-=4;
+                                        if(baseball > 45)
+                                            y+=4;
                                         if(kkk.equals("e"))
                                             drawJumpKick();
                                         else
@@ -141,7 +143,7 @@ public class AlphaFighter implements KeyListener {
                                             
                                         }
                                         baseball++;
-                                        if(baseball > 190) {
+                                        if(baseball > 90) {
                                             kyx = "";
                                             baseball = 0;
                                             kkk = "";
@@ -200,10 +202,67 @@ public class AlphaFighter implements KeyListener {
             };
             t.start();
         }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+        else if(e.getKeyCode() == KeyEvent.VK_LEFT  &&  enemyAggressing) {
             yx = "hk";
+            kyx = "l";
+
+            Thread t = new Thread() {
+                public void run() {
+
+                    if(bb) {
+                        clear();
+                        while(true) {
+                            drawBlockDown();
+                            try {
+                                Thread.sleep(1000);
+                            } catch(Exception etwo) {
+                                etwo.printStackTrace();
+                            }
+                            if(!enemyAggressing)
+                                break;
+                        }
+                    }
+                }
+            };
+            t.start();
         }
-        if(e.getKeyCode() == KeyEvent.VK_T) {
+        else if(e.getKeyCode() == KeyEvent.VK_DOWN  &&  enemyAggressing) {
+
+            Thread t = new Thread() {
+                public void run() {
+
+                    bb = true;
+                }
+            };
+            t.start();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_LEFT  && !bb  &&  enemyAggressing) {
+            yx = "hk";
+            kyx = "l";
+
+            Thread t = new Thread() {
+                public void run() {
+
+                    clear();
+                    while(true) {
+                        drawBlock();
+                        try {
+                            Thread.sleep(1000);
+                        } catch(Exception etwo) {
+                            etwo.printStackTrace();
+                        }
+                        if(!enemyAggressing)
+                            break;
+                    }
+                }
+            };
+            t.start();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+            yx = "hk";
+            kyx = "l";
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_T) {
             if(yx.equals("hk")) {
                 Thread t = new Thread(new Runnable() {
                     @Override
@@ -234,10 +293,10 @@ public class AlphaFighter implements KeyListener {
                 t.start();
             }
         }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+        else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
             yx = "dp";
         }
-        if(e.getKeyCode() == KeyEvent.VK_G) {
+        else if(e.getKeyCode() == KeyEvent.VK_G) {
             if(yx.equals("dp")) {
                 Thread tt1 = new Thread() {
                     public void run() {
@@ -246,11 +305,11 @@ public class AlphaFighter implements KeyListener {
                                 try {
 clear();
                                 Random rnd = new Random();
-                                int a = rnd.nextInt(4);
+                                int a = rnd.nextInt(8);
                                 if(a == 0) {
                                     drawBlockEnemy();
                                 } else if(a == 1) {
-                                    drawBlockDownEnemy();
+                                    //drawBlockDownEnemy();
                                 }
                                    if(babysitter == 50 || babysitter == 100 || babysitter == 140)
                                    if(x >= x2 - 50 && x <= x2 + 100 - 50 &&
@@ -259,7 +318,7 @@ clear();
                                     drawScoreLives();
                                 } catch(Exception e) {}
 
-                                clear();
+//                                clear();
                                 if(babysitter > 50 && babysitter < 100){
                                     y-=2;
                                     drawDPunch1();
@@ -293,7 +352,7 @@ clear();
                 tt1.start();
             }
         }
-        if(e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP) {
+        else if(e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP) {
             
             if(e.getKeyCode() == KeyEvent.VK_E) {
                 kkk = "e";
@@ -334,59 +393,7 @@ clear();
             
             thread.start();
         }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT  &&  enemyAggressing) {
-
-            Thread t = new Thread() {
-                public void run() {
-
-                    if(bb) {
-                        clear();
-                        while(true) {
-                            drawBlockDown();
-                            try {
-                                Thread.sleep(1000);
-                            } catch(Exception etwo) {
-                                etwo.printStackTrace();
-                            }
-                            if(!enemyAggressing)
-                                break;
-                        }
-                    }
-                }
-            };
-            t.start();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN  &&  enemyAggressing) {
-
-            Thread t = new Thread() {
-                public void run() {
-
-                    bb = true;
-                }
-            };
-            t.start();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT  && !bb  &&  enemyAggressing) {
-
-            Thread t = new Thread() {
-                public void run() {
-
-                    clear();
-                    while(true) {
-                        drawBlock();
-                        try {
-                            Thread.sleep(1000);
-                        } catch(Exception etwo) {
-                            etwo.printStackTrace();
-                        }
-                        if(!enemyAggressing)
-                            break;
-                    }
-                }
-            };
-            t.start();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_F) {
+        else if(e.getKeyCode() == KeyEvent.VK_F) {
 
             Thread t = new Thread() {
                 public void run() {
@@ -397,13 +404,25 @@ clear();
             };
             t.start();
         }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
             kyx = "r";
+            Thread t = new Thread() {
+                public void run() {
+                    ky = "r";
+                    kyk = "rr";
+                    eky = -99;
+                    kk = "";
+                    x+=5;
+                    clear();
+                    drawStander();
+                }
+            };
+            t.start();
         }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+        else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
             kyx = "l";
         }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
             Thread t = new Thread() {
                 public void run() {
                     ky = "r";
@@ -428,7 +447,7 @@ clear();
             clear();
             drawKick();
         }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT && !enemyAggressing) {
+        else if(e.getKeyCode() == KeyEvent.VK_LEFT && !enemyAggressing) {
             Thread t = new Thread() {
                 public void run() {
                     ky = "l";
@@ -436,6 +455,20 @@ clear();
                     x-=5;
                     clear();
                     drawStander();
+                }
+            };
+            t.start();
+        }
+        else {
+            Thread t = new Thread() {
+                public void run() {
+                    while(true) {
+                        clear();
+                        drawStander();
+                        try {
+                            Thread.sleep(100);
+                        } catch(Exception ee) {}
+                    }
                 }
             };
             t.start();
@@ -536,8 +569,8 @@ clear();
                             enemyAggressing = false;
                             break;
                     }
-                    clear();
-                    drawStanderEnemy();
+                    //clear();
+                    //drawStanderEnemy();
                 }
             }
         };
@@ -549,7 +582,7 @@ clear();
         */
             if (eky != -99)
                 return;
-clear();
+//clear();
             Thread t = new Thread() {
                 public void run() {
                     try {
@@ -564,11 +597,11 @@ clear();
                         try {
                             try {
                                 Random rnd = new Random();
-                                int a = rnd.nextInt(4);
+                                int a = rnd.nextInt(8);
                                 if(a == 0) {
                                     drawBlockEnemy();
                                 } else if(a == 1) {
-                                    drawBlockDownEnemy();
+                                    //drawBlockDownEnemy();
                                 }
                                 if(!isBlockingEnemy)
                                 if(b == -1)
@@ -590,8 +623,8 @@ clear();
                         } catch(Exception ev) {
                         }
                     }
-                    clear();
-                    drawStander();
+                    //clear();
+                    //drawStander();
                 }
             };
             t.start();
@@ -604,12 +637,24 @@ clear();
                 return;
             Thread t = new Thread() {
                 public void run() {
-                    try {
-                        Image i = ImageIO.read(getClass().getResourceAsStream("hadokenb.png"));
-                        g.drawImage(i, x2, y2, 100, 300, null);
-                    } catch(Exception ev) {
-                        ev.printStackTrace();
-                    }
+                    Thread tt = new Thread() {
+                        public void run() {
+                            try {
+                                Image ii = ImageIO.read(getClass().getResourceAsStream("hadokenb.png"));
+                                g.drawImage(ii, x2, y2, 100, 300, null);
+                                Thread.sleep(1000);
+                            } catch(Exception ev) {
+                                ev.printStackTrace();
+                            }
+                        }
+                    };
+                            try {
+                                Image ii = ImageIO.read(getClass().getResourceAsStream("hadokenb.png"));
+                                g.drawImage(ii, x2, y2, 100, 300, null);
+                            } catch(Exception ev) {
+                                ev.printStackTrace();
+                            }
+//                    tt.start();
                     fb2 = new fireball(x2, y2+130);
                     while(true) {
                         try {
@@ -633,8 +678,8 @@ clear();
                         } catch(Exception ev) {
                         }
                     }
-                    clear();
-                    drawStander();
+//                    clear();
+  //                  drawStander();
                 }
             };
             t.start();
@@ -644,16 +689,16 @@ clear();
         /* use the image that is the jump/kick picture
         */
         try {
-clear();
+//clear();
 
             Image i = ImageIO.read(getClass().getResourceAsStream("kickb.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(4);
+            int a = rnd.nextInt(8);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
-                drawBlockDownEnemy();
+                //drawBlockDownEnemy();
             }
             isBlockingFriend = false;
             if(!isBlockingEnemy)
@@ -669,16 +714,16 @@ clear();
         /* use the image that is the jump/kick picture
         */
         try {
-clear();
+//clear();
 
             Image i = ImageIO.read(getClass().getResourceAsStream("hkick1.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(4);
+            int a = rnd.nextInt(8);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
-                drawBlockDownEnemy();
+                //drawBlockDownEnemy();
             }
             isBlockingFriend = false;
             if(!isBlockingEnemy)
@@ -694,16 +739,16 @@ clear();
         /* use the image that is the jump/kick picture
         */
         try {
-clear();
+//clear();
 
             Image i = ImageIO.read(getClass().getResourceAsStream("hkick2.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(4);
+            int a = rnd.nextInt(8);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
-                drawBlockDownEnemy();
+                //drawBlockDownEnemy();
             }
             isBlockingFriend = false;
             if(!isBlockingEnemy)
@@ -787,15 +832,15 @@ clear();
         /* use the image that is the jump/kick picture
         */
         try {
-clear();
+//clear();
             Image i = ImageIO.read(getClass().getResourceAsStream("punch.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(4);
+            int a = rnd.nextInt(8);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
-                drawBlockDownEnemy();
+                //drawBlockDownEnemy();
             }
             isBlockingFriend = false;
             if(!isBlockingEnemy)
@@ -831,11 +876,11 @@ clear();
             Image i = ImageIO.read(getClass().getResourceAsStream("jumpkick.png"));
             g.drawImage(i, x, y, 100, 300, null);
             Random rnd = new Random();
-            int a = rnd.nextInt(4);
+            int a = rnd.nextInt(8);
             if(a == 0) {
                 drawBlockEnemy();
             } else if(a == 1) {
-                drawBlockDownEnemy();
+                //drawBlockDownEnemy();
             }
             isBlockingFriend = false;
             if(!isBlockingEnemy)
@@ -992,16 +1037,26 @@ clear();
             @Override
             public void run() {
                 try {
-                    g.setColor(Color.PINK);
-                    g.fillRect(0, 0, 1000, 800);
+                    //g.setColor(Color.PINK);
+                    //g.fillRect(0, 0, 1000, 800);
+                    g.drawImage(i, 0, 0, 1000, 800, null);
                     drawScoreLives();
                 } catch(Exception e) {}
             }
         });
-        thread.start();
+//        thread.start();
+                try {
+                    //g.setColor(Color.PINK);
+                    //g.fillRect(0, 0, 1000, 800);
+                    g.drawImage(i, 0, 0, 1000, 800, null);
+                    drawScoreLives();
+                } catch(Exception e) {}
     }
-
+Image i = null;
     public AlphaFighter() {
+        try {
+            i = ImageIO.read(getClass().getResourceAsStream("bg.gif"));
+        } catch(Exception e) {}
         j.setTitle ("Alpha Fighter II");
         
         j.setLayout(null);
@@ -1022,7 +1077,7 @@ clear();
         Thread t = new Thread() {
             public void run() {
                 while(true) {
-                    drawStander();
+  //                  drawStander();
                     try {
                         Thread.sleep(100);
                     } catch(Exception ee) {}
@@ -1030,12 +1085,24 @@ clear();
             }
         };
         t.start();
+        Thread tt = new Thread() {
+            public void run() {
+               try {
+                  g.setColor(Color.BLACK);
+                  g.drawString("Ready?!", 200, 200);
+                  Thread.sleep(5000);
+               } catch(Exception e) {}
+            }
+        };
+        tt.start();
         drawStanderEnemy();
         drawEnemy();
         
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
-    }
+         
+        try {Robot robot = new Robot();robot.keyPress(KeyEvent.VK_Q); } catch (AWTException e) {}
+}
     
     public void drawScoreLives() {
         g.setColor(Color.white);
@@ -1045,7 +1112,16 @@ clear();
         
         if(livesEnemy <= 0 || livesFriend <= 0) {
             try {
-                Thread.sleep(5000);
+                Thread tt = new Thread() {
+                    public void run() {
+                       try {
+                          g.setColor(Color.BLACK);
+                          g.drawString("Ready?!", 200, 200);
+                          Thread.sleep(5000);
+                       } catch(Exception e) {}
+                    }
+                };
+                tt.start();
                 livesEnemy = 50;
                 livesFriend = 50;
                 if(livesFriend <= 0)
