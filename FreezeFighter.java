@@ -521,7 +521,7 @@ public class FreezeFighter implements KeyListener {
                         ev.printStackTrace();
                     }
                     Random random = new Random();
-                    int v = random.nextInt(7);
+                    int v = random.nextInt(8);
                     Random random2 = new Random();
                     int v2 = random.nextInt(2);
                     if (v2 == 0) {
@@ -550,15 +550,9 @@ public class FreezeFighter implements KeyListener {
                             }
                             break;
                         case 2:
-                            if(done) {
-                                done = false;
-                                isBlockingEnemy = false;
-                                enemyAggressing = true;
-                                drawStanderEnemy();
-                                done = false;
-                                drawFireballStanceEnemy();
-                                enemyAggressing = true;
-                            }
+                            isBlockingEnemy = false;
+                            drawStanderEnemy();
+                            enemyAggressing = false;
                             break;
                         case 3:
                             if(done) {
@@ -577,17 +571,15 @@ public class FreezeFighter implements KeyListener {
                             }
                             break;
                         case 5:
+                        case 6:
                             if(done) {
                                 done = false;
                                 isBlockingEnemy = false;
-                                enemyAggressing = true;
-                                drawStanderEnemy();
-                                done = false;
-                                drawFireballStanceEnemy();
+                                drawKickEnemy();
                                 enemyAggressing = true;
                             }
                             break;
-                        case 6:
+                        case 7:
                             if(done) {
                                 done = false;
                                 isBlockingEnemy = false;
@@ -703,7 +695,7 @@ public class FreezeFighter implements KeyListener {
     }
 
     public void drawFireballStanceEnemy() {
-        /* use the image that is the jump/kick picture
+        /* use the image that is the hadoken b picture
          */
         c = -1;
         Thread t = new Thread() {
@@ -711,10 +703,10 @@ public class FreezeFighter implements KeyListener {
                 try {
                     Image ii = ImageIO.read(getClass().getResourceAsStream("hadokenb.png"));
                     g.drawImage(ii, x2, y2, 160, 300, null);
+                    Thread.sleep(1000);
                 } catch (Exception ev) {
                     ev.printStackTrace();
                 }
-//                    tt.start();
                 fb2 = new fireball(x2, y2 + 30);
                 while (true) {
                     try {
