@@ -26,6 +26,8 @@ import javax.swing.JPanel;
 
 public class FreezeFighter implements KeyListener {
 
+    boolean done = false;
+    boolean youwon = false;
     int clock = 99;
 
     int b = -1;
@@ -523,10 +525,12 @@ public class FreezeFighter implements KeyListener {
                     Random random2 = new Random();
                     int v2 = random.nextInt(2);
                     if (v2 == 0) {
-                        x2 -= 15;
+                        if(x2 > 50)
+                            x2 -= 15;
                     }
                     if (v2 == 1) {
-                        x2 += 15;
+                        if(x2 < 950)
+                            x2 += 15;
                     }
                     clear();
                     switch (v) {
@@ -536,81 +540,105 @@ public class FreezeFighter implements KeyListener {
                             enemyAggressing = false;
                             break;
                         case 1:
-                            isBlockingEnemy = false;
-                            drawFireballStanceEnemy();
-                            enemyAggressing = true;
+                            if(done) {
+                                done = false;
+                                isBlockingEnemy = false;
+                                enemyAggressing = true;
+                                drawStanderEnemy();
+                                drawFireballStanceEnemy();
+                                enemyAggressing = true;
+                            }
                             break;
                         case 2:
-                            isBlockingEnemy = false;
-                            drawStanderEnemy();
-                            enemyAggressing = false;
+                            if(done) {
+                                done = false;
+                                isBlockingEnemy = false;
+                                enemyAggressing = true;
+                                drawStanderEnemy();
+                                done = false;
+                                drawFireballStanceEnemy();
+                                enemyAggressing = true;
+                            }
                             break;
                         case 3:
-                            isBlockingEnemy = false;
-                            drawKickEnemy();
-                            enemyAggressing = true;
+                            if(done) {
+                                done = false;
+                                isBlockingEnemy = false;
+                                drawKickEnemy();
+                                enemyAggressing = true;
+                            }
                             break;
                         case 4:
-                            isBlockingEnemy = false;
-                            drawEnemyPunch();
-                            enemyAggressing = true;
+                            if(done) {
+                                done = false;
+                                isBlockingEnemy = false;
+                                drawEnemyPunch();
+                                enemyAggressing = true;
+                            }
                             break;
-
                         case 5:
-                            isBlockingEnemy = false;
-                            drawFireballStanceEnemy();
-                            enemyAggressing = true;
+                            if(done) {
+                                done = false;
+                                isBlockingEnemy = false;
+                                enemyAggressing = true;
+                                drawStanderEnemy();
+                                done = false;
+                                drawFireballStanceEnemy();
+                                enemyAggressing = true;
+                            }
                             break;
                         case 6:
-                            isBlockingEnemy = false;
-                            Thread tt1 = new Thread() {
-                                public void run() {
-                                    while (true) {
-                                        clear();
-                                        if (babysitter3 > 50 && babysitter3 < 100) {
-                                            y2 -= 2;
-                                            drawDPunch1Enemy();
-                                        }
-                                        if (babysitter3 > 100 && babysitter3 < 140) {
-                                            y2 -= 2;
-                                            drawDPunch2Enemy();
-                                        }
-                                        if (babysitter3 > 140) {
-                                            y2 += 2;
-                                            drawDPunch3Enemy();
-                                        }
-                                        try {
-                                            Thread.sleep(1);
-                                        } catch (Exception e) {
-
-                                        }
-                                        babysitter3++;
-                                        if (babysitter3 > 190) {
-                                            y2 = 500;
-                                            babysitter3 = 0;
-                                            return;
-                                        }
-                                        try {
-                                            if (babysitter3 == 50 || babysitter3 == 100 || babysitter3 == 140) {
-                                                if (x2 >= x && x2 <= x + 100
-                                                        && y2 >= y && y2 <= y + 300) {
-                                                    livesFriend -= 6;
-                                                }
+                            if(done) {
+                                done = false;
+                                isBlockingEnemy = false;
+                                Thread tt1 = new Thread() {
+                                    public void run() {
+                                        while (true) {
+                                            clear();
+                                            if (babysitter3 > 50 && babysitter3 < 100) {
+                                                y2 -= 2;
+                                                drawDPunch1Enemy();
                                             }
-                                            drawScoreLives();
-                                        } catch (Exception e) {
+                                            if (babysitter3 > 100 && babysitter3 < 140) {
+                                                y2 -= 2;
+                                                drawDPunch2Enemy();
+                                            }
+                                            if (babysitter3 > 140) {
+                                                y2 += 2;
+                                                drawDPunch3Enemy();
+                                            }
+                                            try {
+                                                Thread.sleep(1);
+                                            } catch (Exception e) {
+
+                                            }
+                                            babysitter3++;
+                                            if (babysitter3 > 190) {
+                                                y2 = 500;
+                                                babysitter3 = 0;
+                                                done = true;
+                                                return;
+                                            }
+                                            try {
+                                                if (babysitter3 == 50 || babysitter3 == 100 || babysitter3 == 140) {
+                                                    if (x2 >= x && x2 <= x + 100
+                                                            && y2 >= y && y2 <= y + 300) {
+                                                        livesFriend -= 6;
+                                                    }
+                                                }
+                                                drawScoreLives();
+                                            } catch (Exception e) {
+                                            }
                                         }
                                     }
-                                }
-                            };
-                            tt1.start();
+                                };
+                                enemyAggressing = true;
+                                tt1.start();
+                            }
                             break;
                         default:
-                            enemyAggressing = false;
                             break;
                     }
-                    //clear();
-                    //drawStanderEnemy();
                 }
             }
         };
@@ -664,13 +692,11 @@ public class FreezeFighter implements KeyListener {
                         g.fillOval(fb.x, fb.y, 50, 50);
                         if (fb.x > 1070) {
                             fb = null;
-                            break;
+                            return;
                         }
                     } catch (Exception ev) {
                     }
                 }
-                //clear();
-                //drawStander();
             }
         };
         t.start();
@@ -679,23 +705,9 @@ public class FreezeFighter implements KeyListener {
     public void drawFireballStanceEnemy() {
         /* use the image that is the jump/kick picture
          */
-        if (eky != -99) {
-            return;
-        }
         c = -1;
         Thread t = new Thread() {
             public void run() {
-                Thread tt = new Thread() {
-                    public void run() {
-                        try {
-                            Image ii = ImageIO.read(getClass().getResourceAsStream("hadokenb.png"));
-                            g.drawImage(ii, x2, y2, 160, 300, null);
-                            Thread.sleep(1000);
-                        } catch (Exception ev) {
-                            ev.printStackTrace();
-                        }
-                    }
-                };
                 try {
                     Image ii = ImageIO.read(getClass().getResourceAsStream("hadokenb.png"));
                     g.drawImage(ii, x2, y2, 160, 300, null);
@@ -708,7 +720,7 @@ public class FreezeFighter implements KeyListener {
                     try {
                         try {
                             if (c == -1) {
-                                if (fb2.x >= x - 115 && fb2.x <= x + 160 - 115
+                                if (fb2.x >= x && fb2.x <= x + 160
                                         && fb2.y >= y && fb2.y <= y + 300) {
                                     livesFriend -= 12;
                                     c = 0;
@@ -723,7 +735,8 @@ public class FreezeFighter implements KeyListener {
                         g.fillOval(fb2.x, fb2.y, 50, 50);
                         if (fb2.x < -70) {
                             fb2 = null;
-                            break;
+                            done = true;
+                            return;
                         }
                     } catch (Exception ev) {
                     }
@@ -827,6 +840,7 @@ public class FreezeFighter implements KeyListener {
                     livesFriend -= 6;
                 }
             }
+            done = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -866,6 +880,7 @@ public class FreezeFighter implements KeyListener {
             Image i = ImageIO.read(getClass().getResourceAsStream("blockdownb.png"));
             g.drawImage(i, x2, y2, 160, 300, null);
             isBlockingEnemy = true;
+            done = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -879,6 +894,7 @@ public class FreezeFighter implements KeyListener {
             Image i = ImageIO.read(getClass().getResourceAsStream("blockdownb.png"));
             g.drawImage(i, x2, y2, 160, 300, null);
             isBlockingEnemy = true;
+            done = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -923,6 +939,7 @@ public class FreezeFighter implements KeyListener {
                     livesFriend -= 6;
                 }
             }
+            done = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1063,6 +1080,7 @@ public class FreezeFighter implements KeyListener {
                     livesFriend -= 6;
                 }
             }
+            done = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1075,6 +1093,7 @@ public class FreezeFighter implements KeyListener {
 
             Image i = ImageIO.read(getClass().getResourceAsStream("floatb.png"));
             g.drawImage(i, x2, y2, 160, 300, null);
+            done = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1087,6 +1106,7 @@ public class FreezeFighter implements KeyListener {
 
             Image i = ImageIO.read(getClass().getResourceAsStream("float8b.png"));
             g.drawImage(i, x2, y2, 160, 300, null);
+            done = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1185,6 +1205,7 @@ public class FreezeFighter implements KeyListener {
         Thread d = new Thread() {
             public void run() {
                 while (true) {
+                    youwon = false;
                     try {
                         if (livesFriend <= 0 || (clock <= 0 && livesFriend < livesEnemy)) {
                             g.setColor(Color.PINK);
@@ -1198,6 +1219,7 @@ public class FreezeFighter implements KeyListener {
                             livesFriend = 100;
                             clock = 99;
                         } else if (livesEnemy <= 0 || (clock <= 0 && livesEnemy < livesFriend)) {
+                            youwon = true;
                             g.setColor(Color.pink);
                             g.drawOval(650, 42, 16, 16);
                             JOptionPane.showMessageDialog(null, "You win");
@@ -1243,6 +1265,7 @@ public class FreezeFighter implements KeyListener {
 
                     Image i = ImageIO.read(getClass().getResourceAsStream("standb.png"));
                     g.drawImage(i, x2, y2, 160, 300, null);
+                    done = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
