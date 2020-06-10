@@ -1,16 +1,11 @@
-
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Panel;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Random;
 
@@ -20,16 +15,20 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class FreezeFighter implements KeyListener {
 
     boolean done = false;
     boolean youwon = false;
+    boolean pause = false;
     int clock = 99;
-
+    int cc = -1;
+    int bbbb;
     int b = -1;
     int c = -1;
     int d = -1;
@@ -141,372 +140,417 @@ public class FreezeFighter implements KeyListener {
 
         /* User can press up or kick button
          */
-        if (e.getKeyCode() == KeyEvent.VK_UP && (kyx.equals("l") || kyx.equals("r"))) {
-
-            Thread t = new Thread() {
-
-                public void run() {
-
-                    key = "u";
-                    kky = "u";
-                    try {
-                        Thread tt1 = new Thread() {
-                            public void run() {
-                                while (true) {
-                                    if (kyx.equals("r")) {
-                                        clear();
-                                        x += 1;
-                                        if (baseball < 45) {
-                                            y -= 4;
-                                        }
-                                        if (baseball > 45) {
-                                            y += 4;
-                                        }
-                                        if (kkk.equals("e")) {
-                                            drawKick();
-                                        } else {
-                                            drawJump1();
-                                        }
-                                        try {
-                                            Thread.sleep(1);
-                                        } catch (Exception e) {
-
-                                        }
-                                        baseball++;
-                                        if (baseball > 90) {
-                                            kyx = "";
-                                            baseball = 0;
-                                            kkk = "";
-                                            return;
-                                        }
-                                    } else {
-                                        break;
-                                    }
-                                }
-                                baseball = 0;
-                            }
-                        };
-                        tt1.start();
-
-                        Thread tt2 = new Thread() {
-                            public void run() {
-                                while (true) {
-                                    if (kyx.equals("l")) {
-                                        clear();
-                                        x -= 1;
-                                        if (baseball < 45) {
-                                            y -= 4;
-                                        }
-                                        if (kkk.equals("e")) {
-                                            drawKick();
-                                        } else {
-                                            drawJump1();
-                                        }
-                                        if (baseball > 45) {
-                                            y += 4;
-                                        }
-                                        try {
-                                            Thread.sleep(1);
-                                        } catch (Exception e) {
-
-                                        }
-                                        baseball++;
-                                        if (baseball > 90) {
-                                            kyx = "";
-                                            baseball = 0;
-                                            kkk = "";
-                                            return;
-                                        }
-                                    } else {
-                                        break;
-                                    }
-                                }
-                                baseball = 0;
-                            }
-                        };
-                        tt2.start();
-
-                        Thread.sleep(15);
-                    } catch (Exception ev) {
-                        ev.printStackTrace();
-                    }
-                    key = "";
-                    ky = "";
-                    kk = "";
+        if (e.getKeyCode() == KeyEvent.VK_P) {
+            if(!pause)
+                pause = true;
+            else
+                pause = false;
+            if(!pause) {
+                try {
+                    audioClip.loop(Clip.LOOP_CONTINUOUSLY);
+                } catch(Exception ee) {
+                    ee.printStackTrace();
                 }
-            };
-            t.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT && enemyAggressing) {
-            yx = "hk";
-            kyx = "l";
-
-            Thread t = new Thread() {
-                public void run() {
-
-                    clear();
-                    while (true) {
-                        drawBlockDown();
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception etwo) {
-                            etwo.printStackTrace();
-                        }
-                        if (!enemyAggressing) {
-                            return;
-                        }
-                    }
+            } else if(pause) {
+                if(clock > 0)
+                    cc = clock;
+                try {
+                    audioClip.stop();
+                } catch(Exception ee) {
+                    ee.printStackTrace();
                 }
-            };
-            t.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN && enemyAggressing) {
+            }
+            return;
+        }
+        if (! pause) {
+            if (e.getKeyCode() == KeyEvent.VK_UP && (kyx.equals("l") || kyx.equals("r"))) {
 
-            Thread t = new Thread() {
-                public void run() {
+                Thread t = new Thread() {
 
-                    bb = true;
-                }
-            };
-            t.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT && !bb && enemyAggressing) {
-            yx = "hk";
-            kyx = "l";
-
-            Thread t = new Thread() {
-                public void run() {
-
-                    clear();
-                    while (true) {
-                        drawBlock();
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception etwo) {
-                            etwo.printStackTrace();
-                        }
-                        if (!enemyAggressing) {
-                            break;
-                        }
-                    }
-                }
-            };
-            t.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            yx = "hk";
-            kyx = "l";
-            x -= 5;
-        } else if (e.getKeyCode() == KeyEvent.VK_T) {
-            if (yx.equals("hk")) {
-                Thread t = new Thread(new Runnable() {
-                    @Override
                     public void run() {
-                        y -= 50;
+
+                        key = "u";
+                        kky = "u";
+                        try {
+                            Thread tt1 = new Thread() {
+                                public void run() {
+                                    while (true) {
+                                        if (kyx.equals("r")) {
+                                            clear();
+                                            x += 1;
+                                            if (baseball < 45) {
+                                                y -= 4;
+                                            }
+                                            if (baseball > 45) {
+                                                y += 4;
+                                            }
+                                            if (kkk.equals("e")) {
+                                                drawKick();
+                                            } else {
+                                                drawJump1();
+                                            }
+                                            try {
+                                                Thread.sleep(1);
+                                            } catch (Exception e) {
+
+                                            }
+                                            baseball++;
+                                            if (baseball > 90) {
+                                                kyx = "";
+                                                baseball = 0;
+                                                kkk = "";
+                                                return;
+                                            }
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    baseball = 0;
+                                }
+                            };
+                            tt1.start();
+
+                            Thread tt2 = new Thread() {
+                                public void run() {
+                                    while (true) {
+                                        if (kyx.equals("l")) {
+                                            clear();
+                                            x -= 1;
+                                            if (baseball < 45) {
+                                                y -= 4;
+                                            }
+                                            if (kkk.equals("e")) {
+                                                drawKick();
+                                            } else {
+                                                drawJump1();
+                                            }
+                                            if (baseball > 45) {
+                                                y += 4;
+                                            }
+                                            try {
+                                                Thread.sleep(1);
+                                            } catch (Exception e) {
+
+                                            }
+                                            baseball++;
+                                            if (baseball > 90) {
+                                                kyx = "";
+                                                baseball = 0;
+                                                kkk = "";
+                                                return;
+                                            }
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    baseball = 0;
+                                }
+                            };
+                            tt2.start();
+
+                            Thread.sleep(15);
+                        } catch (Exception ev) {
+                            ev.printStackTrace();
+                        }
+                        key = "";
+                        ky = "";
+                        kk = "";
+                    }
+                };
+                t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT && enemyAggressing) {
+                yx = "hk";
+                kyx = "l";
+
+                Thread t = new Thread() {
+                    public void run() {
+
+                        clear();
                         while (true) {
-                            if (bbb > 0 && bbb < 40) {
-                                drawHKick1();
-                            }
-                            if (bbb > 40 && bbb < 80) {
-                                drawHKick2();
-                            }
-                            if (bbb > 80 && bbb < 120) {
-                                drawHKick1();
-                            }
+                            drawBlockDown();
                             try {
-                                Thread.sleep(1);
-                            } catch (Exception e) {
+                                Thread.sleep(1000);
+                            } catch (Exception etwo) {
+                                etwo.printStackTrace();
                             }
-                            x += 1;
-                            bbb++;
-                            if (bbb > 125) {
-                                bbb = 0;
-                                yx = "";
-                                y = 500;
+                            if (!enemyAggressing) {
                                 return;
                             }
                         }
                     }
-                });
+                };
                 t.start();
-            }
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            yx = "dp";
-        } else if (e.getKeyCode() == KeyEvent.VK_G) {
-            if (yx.equals("dp")) {
-                Thread tt1 = new Thread() {
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN && enemyAggressing) {
+
+                Thread t = new Thread() {
                     public void run() {
+
+                        bb = true;
+                    }
+                };
+                t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT && !bb && enemyAggressing) {
+                yx = "hk";
+                kyx = "l";
+
+                Thread t = new Thread() {
+                    public void run() {
+
+                        clear();
                         while (true) {
-                            if (yx.equals("dp")) {
-                                try {
-                                    clear();
-                                    Random rnd = new Random();
-                                    int a = rnd.nextInt(5);
-                                    if (a == 0) {
-                                        drawBlockEnemy();
-                                    } else if (a == 1) {
-                                        //drawBlockDownEnemy();
-                                    }
-                                    if (babysitter == 50 || babysitter == 100 || babysitter == 140) {
-                                        if (x >= x2 - 115 && x <= x2 + 160 - 115
-                                                && y >= y2 && y <= y2 + 300) {
-                                            livesEnemy -= 6;
-                                        }
-                                    }
-                                    drawScoreLives();
-                                } catch (Exception e) {
-                                }
-
-//                                clear();
-                                if (babysitter > 10 && babysitter < 30) {
-                                    y -= 2;
-                                    drawDPunch1();
-                                }
-                                if (babysitter > 30 && babysitter < 60) {
-                                    y -= 2;
-                                    drawDPunch2();
-                                }
-                                if (babysitter > 60) {
-                                    y += 2;
-                                    drawDPunch3();
-                                }
-                                try {
-                                    Thread.sleep(1);
-                                } catch (Exception e) {
-
-                                }
-                                babysitter++;
-                                if (babysitter > 90) {
-                                    y = 500;
-                                    babysitter = 0;
-                                    return;
-                                }
-                            } else {
+                            drawBlock();
+                            try {
+                                Thread.sleep(1000);
+                            } catch (Exception etwo) {
+                                etwo.printStackTrace();
+                            }
+                            if (!enemyAggressing) {
                                 break;
                             }
                         }
-                        babysitter = 0;
-                        yx = "";
                     }
                 };
-                tt1.start();
-            }
-        } else if (e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP) {
-            if (!kyx.equals("l") && !kyx.equals("r")) {
-
-                if (e.getKeyCode() == KeyEvent.VK_E) {
-                    kkk = "e";
-                } else {
-                    kky = "u";
-                }
-
-                Thread thread = new Thread() {
-                    public void run() {
-                        while (true) {
-                            if (!kyx.equals("l") && !kyx.equals("r") && kky.equals("u")) {
-                                clear();
-                                if (baseball < 95) {
-                                    y -= 2;
+                t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                yx = "hk";
+                kyx = "l";
+                x -= 5;
+            } else if (e.getKeyCode() == KeyEvent.VK_T) {
+                if (yx.equals("hk")) {
+                    Thread t = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            y -= 50;
+                            try {
+                                makeSound2("hkick.wav");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            while (true) {
+                                if (bbb > 0 && bbb < 40) {
+                                    drawHKick1();
                                 }
-                                if (baseball > 95) {
-                                    y += 2;
+                                if (bbb > 40 && bbb < 80) {
+                                    drawHKick2();
                                 }
-                                if (kkk.equals("e")) {
-                                    drawKick();
-                                } else {
-                                    drawJump1();
+                                if (bbb > 80 && bbb < 120) {
+                                    drawHKick1();
                                 }
                                 try {
                                     Thread.sleep(1);
-                                } catch (Exception ee) {
-
+                                } catch (Exception e) {
                                 }
-                                baseball++;
-                                if (baseball > 190) {
-                                    kyx = "";
-                                    baseball = 0;
-                                    kkk = "";
-                                    kky = "";
+                                x += 1;
+                                bbb++;
+                                if (bbb > 125) {
+                                    bbb = 0;
+                                    yx = "";
+                                    y = 500;
                                     return;
                                 }
-                            } else {
-                                return;
+                            }
+                        }
+                    });
+                    t.start();
+                }
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                yx = "dp";
+            } else if (e.getKeyCode() == KeyEvent.VK_G) {
+                if (yx.equals("dp")) {
+                    Thread tt1 = new Thread() {
+                        public void run() {
+                            if (yx.equals("dp")) {
+                                try {
+                                    makeSound2("shoryuken.wav");
+                                } catch (Exception ee) {
+                                }
+                            }
+                            while (true) {
+                                if (yx.equals("dp")) {
+                                    try {
+                                        clear();
+                                        Random rnd = new Random();
+                                        int a = rnd.nextInt(5);
+                                        if (a == 0) {
+                                            drawBlockEnemy();
+                                        } else if (a == 1) {
+                                            //drawBlockDownEnemy();
+                                        }
+                                        if (babysitter == 50 || babysitter == 100 || babysitter == 140) {
+                                            if (x >= x2 - 115 && x <= x2 + 160 - 115
+                                                    && y >= y2 && y <= y2 + 300) {
+                                                livesEnemy -= 6;
+                                            }
+                                        }
+                                        drawScoreLives();
+                                    } catch (Exception e) {
+                                    }
+
+//                                clear();
+                                    if (babysitter > 10 && babysitter < 30) {
+                                        y -= 2;
+                                        drawDPunch1();
+                                    }
+                                    if (babysitter > 30 && babysitter < 60) {
+                                        y -= 2;
+                                        drawDPunch2();
+                                    }
+                                    if (babysitter > 60) {
+                                        y += 2;
+                                        drawDPunch3();
+                                    }
+                                    try {
+                                        Thread.sleep(1);
+                                    } catch (Exception e) {
+
+                                    }
+                                    babysitter++;
+                                    if (babysitter > 90) {
+                                        y = 500;
+                                        babysitter = 0;
+                                        return;
+                                    }
+                                } else {
+                                    break;
+                                }
+                            }
+                            babysitter = 0;
+                            yx = "";
+                        }
+                    };
+                    tt1.start();
+                }
+            } else if (e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP) {
+                if (!kyx.equals("l") && !kyx.equals("r")) {
+
+                    if (e.getKeyCode() == KeyEvent.VK_E) {
+                        kkk = "e";
+                    } else {
+                        kky = "u";
+                    }
+
+                    Thread thread = new Thread() {
+                        public void run() {
+                            while (true) {
+                                if (!kyx.equals("l") && !kyx.equals("r") && kky.equals("u")) {
+                                    clear();
+                                    if (baseball < 95) {
+                                        y -= 2;
+                                    }
+                                    if (baseball > 95) {
+                                        y += 2;
+                                    }
+                                    if (kkk.equals("e")) {
+                                        drawKick();
+                                    } else {
+                                        drawJump1();
+                                    }
+                                    try {
+                                        Thread.sleep(1);
+                                    } catch (Exception ee) {
+
+                                    }
+                                    baseball++;
+                                    if (baseball > 190) {
+                                        kyx = "";
+                                        baseball = 0;
+                                        kkk = "";
+                                        kky = "";
+                                        return;
+                                    }
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                    };
+
+                    thread.start();
+                }
+            } else if (e.getKeyCode() == KeyEvent.VK_F) {
+
+                Thread t = new Thread() {
+                    public void run() {
+
+                        clear();
+                        drawPunch();
+                    }
+                };
+                t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_W) {
+
+                Thread t = new Thread() {
+                    public void run() {
+
+                        clear();
+                        drawShort();
+                    }
+                };
+                t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                kyx = "r";
+                Thread t = new Thread() {
+                    public void run() {
+                        ky = "r";
+                        kyk = "rr";
+                        eky = -99;
+                        kk = "";
+                        x += 5;
+                        clear();
+                        drawStander();
+                    }
+                };
+                t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                kyx = "l";
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                Thread t = new Thread() {
+                    public void run() {
+                        ky = "r";
+                        kyk = "rr";
+                        eky = -99;
+                        kk = "";
+                        x += 5;
+                        clear();
+                        drawStander();
+                    }
+                };
+                t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_D) {
+                if (eky == -99 && eky != 0) {
+                    clear();
+                    drawFireballStance();
+                }
+                eky = 0;
+            } else if (e.getKeyCode() == KeyEvent.VK_R) {
+                clear();
+                drawKick();
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT && !enemyAggressing) {
+                Thread t = new Thread() {
+                    public void run() {
+                        ky = "l";
+                        kk = "";
+                        x -= 5;
+                        clear();
+                        drawStander();
+                    }
+                };
+                t.start();
+            } else {
+                Thread t = new Thread() {
+                    public void run() {
+                        while (true) {
+                            clear();
+                            drawStander();
+                            try {
+                                Thread.sleep(100);
+                            } catch (Exception ee) {
                             }
                         }
                     }
                 };
-
-                thread.start();
+                t.start();
             }
-        } else if (e.getKeyCode() == KeyEvent.VK_F) {
-
-            Thread t = new Thread() {
-                public void run() {
-
-                    clear();
-                    drawPunch();
-                }
-            };
-            t.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            kyx = "r";
-            Thread t = new Thread() {
-                public void run() {
-                    ky = "r";
-                    kyk = "rr";
-                    eky = -99;
-                    kk = "";
-                    x += 5;
-                    clear();
-                    drawStander();
-                }
-            };
-            t.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            kyx = "l";
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            Thread t = new Thread() {
-                public void run() {
-                    ky = "r";
-                    kyk = "rr";
-                    eky = -99;
-                    kk = "";
-                    x += 5;
-                    clear();
-                    drawStander();
-                }
-            };
-            t.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_D) {
-            if (eky == -99 && eky != 0) {
-                clear();
-                drawFireballStance();
-            }
-            eky = 0;
-        } else if (e.getKeyCode() == KeyEvent.VK_R) {
-            clear();
-            drawKick();
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT && !enemyAggressing) {
-            Thread t = new Thread() {
-                public void run() {
-                    ky = "l";
-                    kk = "";
-                    x -= 5;
-                    clear();
-                    drawStander();
-                }
-            };
-            t.start();
-        } else {
-            Thread t = new Thread() {
-                public void run() {
-                    while (true) {
-                        clear();
-                        drawStander();
-                        try {
-                            Thread.sleep(100);
-                        } catch (Exception ee) {
-                        }
-                    }
-                }
-            };
-            t.start();
         }
         y = 500;
     }
@@ -521,115 +565,167 @@ public class FreezeFighter implements KeyListener {
                         ev.printStackTrace();
                     }
                     Random random = new Random();
-                    int v = random.nextInt(8);
+                    int v = random.nextInt(10);
                     Random random2 = new Random();
                     int v2 = random.nextInt(2);
-                    if (v2 == 0) {
-                        if(x2 > 50)
-                            x2 -= 15;
-                    }
-                    if (v2 == 1) {
-                        if(x2 < 950)
-                            x2 += 15;
+                    if(!pause) {
+                        if (v2 == 0) {
+                            if (x2 > 150) {
+                                x2 -= 35;
+                            }
+                        }
+                        if (v2 == 1) {
+                            if (x2 < 850) {
+                                x2 += 35;
+                            }
+                        }
                     }
                     clear();
-                    switch (v) {
-                        case 0:
-                            isBlockingEnemy = false;
-                            drawStanderEnemy();
-                            enemyAggressing = false;
-                            break;
-                        case 1:
-                            if(done) {
-                                done = false;
+                    if (!pause) {
+                        switch (v) {
+                            case 0:
                                 isBlockingEnemy = false;
-                                enemyAggressing = true;
                                 drawStanderEnemy();
-                                drawFireballStanceEnemy();
-                                enemyAggressing = true;
-                            }
-                            break;
-                        case 2:
-                            isBlockingEnemy = false;
-                            drawStanderEnemy();
-                            enemyAggressing = false;
-                            break;
-                        case 3:
-                            if(done) {
-                                done = false;
+                                enemyAggressing = false;
+                                break;
+                            case 1:
+                                if (done) {
+                                    done = false;
+                                    isBlockingEnemy = false;
+                                    enemyAggressing = true;
+                                    drawStanderEnemy();
+                                    drawFireballStanceEnemy();
+                                    enemyAggressing = true;
+                                }
+                                break;
+                            case 2:
                                 isBlockingEnemy = false;
-                                drawKickEnemy();
-                                enemyAggressing = true;
-                            }
-                            break;
-                        case 4:
-                            if(done) {
-                                done = false;
-                                isBlockingEnemy = false;
-                                drawEnemyPunch();
-                                enemyAggressing = true;
-                            }
-                            break;
-                        case 5:
-                        case 6:
-                            if(done) {
-                                done = false;
-                                isBlockingEnemy = false;
-                                drawKickEnemy();
-                                enemyAggressing = true;
-                            }
-                            break;
-                        case 7:
-                            if(done) {
-                                done = false;
-                                isBlockingEnemy = false;
-                                Thread tt1 = new Thread() {
-                                    public void run() {
-                                        while (true) {
-                                            clear();
-                                            if (babysitter3 > 50 && babysitter3 < 100) {
-                                                y2 -= 2;
-                                                drawDPunch1Enemy();
-                                            }
-                                            if (babysitter3 > 100 && babysitter3 < 140) {
-                                                y2 -= 2;
-                                                drawDPunch2Enemy();
-                                            }
-                                            if (babysitter3 > 140) {
-                                                y2 += 2;
-                                                drawDPunch3Enemy();
-                                            }
-                                            try {
-                                                Thread.sleep(1);
-                                            } catch (Exception e) {
-
-                                            }
-                                            babysitter3++;
-                                            if (babysitter3 > 190) {
-                                                y2 = 500;
-                                                babysitter3 = 0;
-                                                done = true;
-                                                return;
-                                            }
-                                            try {
-                                                if (babysitter3 == 50 || babysitter3 == 100 || babysitter3 == 140) {
-                                                    if (x2 >= x && x2 <= x + 100
-                                                            && y2 >= y && y2 <= y + 300) {
-                                                        livesFriend -= 6;
-                                                    }
+                                drawStanderEnemy();
+                                enemyAggressing = false;
+                                break;
+                            case 3:
+                                if (done) {
+                                    done = false;
+                                    isBlockingEnemy = false;
+                                    drawKickEnemy();
+                                    enemyAggressing = true;
+                                }
+                                break;
+                            case 4:
+                                if (done) {
+                                    done = false;
+                                    isBlockingEnemy = false;
+                                    drawEnemyPunch();
+                                    enemyAggressing = true;
+                                }
+                                break;
+                            case 5:
+                            case 6:
+                                if (done) {
+                                    done = false;
+                                    isBlockingEnemy = false;
+                                    drawKickEnemy();
+                                    enemyAggressing = true;
+                                }
+                                break;
+                            case 7:
+                                if (done) {
+                                    done = false;
+                                    isBlockingEnemy = false;
+                                    Thread tt1 = new Thread() {
+                                        public void run() {
+                                            makeSound2("shoryuken.wav");
+                                            while (true) {
+                                                clear();
+                                                if (babysitter3 > 50 && babysitter3 < 100) {
+                                                    y2 -= 2;
+                                                    drawDPunch1Enemy();
                                                 }
-                                                drawScoreLives();
-                                            } catch (Exception e) {
+                                                if (babysitter3 > 100 && babysitter3 < 140) {
+                                                    y2 -= 2;
+                                                    drawDPunch2Enemy();
+                                                }
+                                                if (babysitter3 > 140) {
+                                                    y2 += 2;
+                                                    drawDPunch3Enemy();
+                                                }
+                                                try {
+                                                    Thread.sleep(1);
+                                                } catch (Exception e) {
+
+                                                }
+                                                babysitter3++;
+                                                if (babysitter3 > 190) {
+                                                    y2 = 500;
+                                                    babysitter3 = 0;
+                                                    done = true;
+                                                    return;
+                                                }
+                                                try {
+                                                    if (babysitter3 == 50 || babysitter3 == 100 || babysitter3 == 140) {
+                                                        if (x2 >= x && x2 <= x + 100
+                                                                && y2 >= y && y2 <= y + 300) {
+                                                            livesFriend -= 6;
+                                                        }
+                                                    }
+                                                    drawScoreLives();
+                                                } catch (Exception e) {
+                                                }
                                             }
                                         }
+                                    };
+                                    enemyAggressing = true;
+                                    tt1.start();
+                                }
+                                break;
+                            case 8:
+                                if(done && 1==2) {
+                                    isBlockingEnemy = false;
+                                    enemyAggressing = false;
+                                    done = false;
+                                    try {
+                                        makeSound2("hkick.wav");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                };
-                                enemyAggressing = true;
-                                tt1.start();
-                            }
-                            break;
-                        default:
-                            break;
+                                    while (true) {
+                                        if (bbbb > 0 && bbbb < 40) {
+                                            drawHKick1Enemy();
+                                        }
+                                        if (bbbb > 40 && bbbb < 80) {
+                                            drawHKick2Enemy();
+                                        }
+                                        if (bbbb > 80 && bbbb < 120) {
+                                            drawHKick3Enemy();
+                                        }
+                                        try {
+                                            Thread.sleep(1);
+                                        } catch (Exception e) {
+                                        }
+                                        x2 -= 1;
+                                        bbbb++;
+                                        if (bbbb > 125) {
+                                            bbbb = 0;
+                                            yx = "";
+                                            y2 = 500;
+                                            done = true;
+                                            enemyAggressing = true;
+                                            return;
+                                        }
+                                    }
+                                }
+                                break;
+                            case 9:
+                                if(done) {
+                                    done = false;
+                                    isBlockingEnemy = false;
+                                    drawShortEnemy();
+                                    enemyAggressing = false;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -649,6 +745,7 @@ public class FreezeFighter implements KeyListener {
         Thread t = new Thread() {
             public void run() {
                 try {
+                    makeSound2("hadoken.wav");
                     Image i = ImageIO.read(getClass().getResourceAsStream("hadoken.png"));
                     g.drawImage(i, x, y, 160, 300, null);
                     isBlockingFriend = false;
@@ -701,6 +798,7 @@ public class FreezeFighter implements KeyListener {
         Thread t = new Thread() {
             public void run() {
                 try {
+                    makeSound2("hadoken.wav");
                     Image ii = ImageIO.read(getClass().getResourceAsStream("hadokenb.png"));
                     g.drawImage(ii, x2, y2, 160, 300, null);
                     Thread.sleep(1000);
@@ -738,6 +836,27 @@ public class FreezeFighter implements KeyListener {
         t.start();
     }
 
+    public void drawShortEnemy() {
+        /* use the image that is the short
+         */
+        try {
+//clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("shortb.png"));
+            g.drawImage(i, x2, y2, 160, 300, null);
+            Thread.sleep(1000);
+            if (!isBlockingFriend) {
+                if (x2 >= x - 115 && x2 <= x + 160 - 115
+                        && y2 >= y && y2 <= y + 300) {
+                    livesFriend -= 6;
+                }
+            }
+            done = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void drawKick() {
         /* use the image that is the jump/kick picture
          */
@@ -758,6 +877,141 @@ public class FreezeFighter implements KeyListener {
                 if (x >= x2 - 115 && x <= x2 + 160 - 115
                         && y >= y2 && y <= y2 + 300) {
                     livesEnemy -= 6;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawShort() {
+        /* use the image that is the jump/kick picture
+         */
+        try {
+//clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("short.png"));
+            g.drawImage(i, x, y, 160, 300, null);
+            Random rnd = new Random();
+            int a = rnd.nextInt(5);
+            if (a == 0) {
+                drawBlockEnemy();
+            } else if (a == 1) {
+                //drawBlockDownEnemy();
+            }
+            isBlockingFriend = false;
+            if (!isBlockingEnemy) {
+                if (x >= x2 - 115 && x <= x2 + 160 - 115
+                        && y >= y2 && y <= y2 + 300) {
+                    livesEnemy -= 6;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawHKick3() {
+        /* use the image that is the jump/kick picture
+         */
+        try {
+//clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("hkick1.png"));
+            g.drawImage(i, x, y, 160, 300, null);
+            Random rnd = new Random();
+            int a = rnd.nextInt(5);
+            if (a == 0) {
+                drawBlockEnemy();
+            } else if (a == 1) {
+                //drawBlockDownEnemy();
+            }
+            isBlockingFriend = false;
+            if (!isBlockingEnemy) {
+                if (x >= x2 - 115 && x <= x2 + 160 - 115
+                        && y >= y2 && y <= y2 + 300) {
+                    livesEnemy -= 6;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawHKick1Enemy() {
+        /* use the image that is the jump/kick picture
+         */
+        try {
+//clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("hkick1.png"));
+            g.drawImage(i, x2, y2, 160, 300, null);
+            Random rnd = new Random();
+            int a = rnd.nextInt(5);
+            if (a == 0) {
+                drawBlockEnemy();
+            } else if (a == 1) {
+                //drawBlockDownEnemy();
+            }
+            isBlockingFriend = false;
+            if (!isBlockingEnemy) {
+                if (x2 >= x - 115 && x2 <= x + 160 - 115
+                        && y2 >= y && y2 <= y + 300) {
+                    livesFriend -= 6;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawHKick2Enemy() {
+        /* use the image that is the jump/kick picture
+         */
+        try {
+//clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("hkick2.png"));
+            g.drawImage(i, x2, y2, 160, 300, null);
+            Random rnd = new Random();
+            int a = rnd.nextInt(5);
+            if (a == 0) {
+                drawBlockEnemy();
+            } else if (a == 1) {
+                //drawBlockDownEnemy();
+            }
+            isBlockingFriend = false;
+            if (!isBlockingEnemy) {
+                if (x2 >= x - 115 && x2 <= x + 160 - 115
+                        && y2 >= y && y2 <= y + 300) {
+                    livesFriend -= 6;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawHKick3Enemy() {
+        /* use the image that is the jump/kick picture
+         */
+        try {
+//clear();
+
+            Image i = ImageIO.read(getClass().getResourceAsStream("hkick1.png"));
+            g.drawImage(i, x2, y2, 160, 300, null);
+            Random rnd = new Random();
+            int a = rnd.nextInt(5);
+            if (a == 0) {
+                drawBlockEnemy();
+            } else if (a == 1) {
+                //drawBlockDownEnemy();
+            }
+            isBlockingFriend = false;
+            if (!isBlockingEnemy) {
+                if (x2 >= x - 115 && x2 <= x + 160 - 115
+                        && y2 >= y && y2 <= y + 300) {
+                    livesFriend -= 6;
                 }
             }
         } catch (Exception e) {
@@ -791,7 +1045,7 @@ public class FreezeFighter implements KeyListener {
             e.printStackTrace();
         }
     }
-
+    
     public void drawHKick2() {
         /* use the image that is the jump/kick picture
          */
@@ -1109,32 +1363,22 @@ public class FreezeFighter implements KeyListener {
     }
 
     public void clear() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    //g.setColor(Color.PINK);
-                    //g.fillRect(0, 0, 1000, 800);
-                    g.drawImage(i, 0, 0, 1000, 800, null);
-                    drawScoreLives();
-                } catch (Exception e) {
-                }
-            }
-        });
-//        thread.start();
         try {
-            //g.setColor(Color.PINK);
-            //g.fillRect(0, 0, 1000, 800);
             g.drawImage(i, 0, 0, 1000, 800, null);
             drawScoreLives();
         } catch (Exception e) {
         }
     }
-    Image i = null;
+
+    public Image i = null;
+
+    public ImageIcon icon = null;
 
     public FreezeFighter() {
         try {
-            i = ImageIO.read(getClass().getResourceAsStream("bg.gif"));
+            icon = new ImageIcon(this.getClass()
+                    .getResource("bg.gif"));
+            i = icon.getImage();
         } catch (Exception e) {
         }
         j.setTitle("Freeze Fighter 2~");
@@ -1156,11 +1400,11 @@ public class FreezeFighter implements KeyListener {
         Thread t = new Thread() {
             public void run() {
                 while (true) {
-                    //                  drawStander();
+                    if(pause)
+                        clock = cc;
                     try {
-                        Thread.sleep(100);
-                    } catch (Exception ee) {
-                    }
+                        Thread.sleep(1000);
+                    } catch(Exception e) {}
                 }
             }
         };
@@ -1291,17 +1535,60 @@ public class FreezeFighter implements KeyListener {
         AudioFormat format = audioStream.getFormat();
 
         DataLine.Info info = new DataLine.Info(Clip.class, format);
-        Clip audioClip = (Clip) AudioSystem.getLine(info);
+        audioClip = (Clip) AudioSystem.getLine(info);
 
         audioClip.open(audioStream);
         audioClip.loop(Clip.LOOP_CONTINUOUSLY);
+    }Clip audioClip = null;
+
+    private void makeSound2(String file) {
+
+        try {
+            File audioFile = new File(file);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+
+            AudioFormat format = audioStream.getFormat();
+
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
+            Clip audioClip = (Clip) AudioSystem.getLine(info);
+
+            audioClip.open(audioStream);
+            audioClip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] arg) {
         try {
-            new FreezeFighter().makeSound("guile.wav");;
+            SwingUtilities .invokeAndWait(new Runnable( ) {
+                @Override
+                public void run() {
+                    try {
+                        new FreezeFighter().makeSound("guile.wav");;
+                    } catch(Exception e) {
+                        
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
