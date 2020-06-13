@@ -15,6 +15,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -23,6 +24,7 @@ import javax.swing.SwingUtilities;
 
 public class FreezeFighter implements KeyListener {
 
+    String kuk = "";
     boolean done = false;
     boolean youwon = false;
     boolean pause = false;
@@ -113,8 +115,8 @@ public class FreezeFighter implements KeyListener {
             if (fst) {
                 fst = false;
             }
-            g.setColor(Color.WHITE);
-            g.fillOval(this.x, this.y, 90, 90);
+            g.setColor(Color.red);
+            g.fillOval(this.x, this.y, 50, 50);
             this.x += 25;
         }
 
@@ -122,8 +124,8 @@ public class FreezeFighter implements KeyListener {
             if (fst) {
                 fst = false;
             }
-            g.setColor(Color.WHITE);
-            g.fillOval(this.x, this.y, 90, 90);
+            g.setColor(Color.blue);
+            g.fillOval(this.x, this.y, 50, 50);
             this.x -= 25;
         }
     }
@@ -354,6 +356,7 @@ public class FreezeFighter implements KeyListener {
                     t.start();
                 }
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                kuk = "rf";
                 yx = "dp";
             } else if (e.getKeyCode() == KeyEvent.VK_G) {
                 if (yx.equals("dp")) {
@@ -467,6 +470,18 @@ public class FreezeFighter implements KeyListener {
 
                     thread.start();
                 }
+            } else if (e.getKeyCode() == KeyEvent.VK_H) {
+
+                Thread t = new Thread() {
+                    public void run() {
+                        
+                        if(kuk.equals("rf")) {
+                            clear();
+                            drawDownPunch();
+                        }
+                    }
+                };
+                t.start();
             } else if (e.getKeyCode() == KeyEvent.VK_F) {
 
                 Thread t = new Thread() {
@@ -487,6 +502,7 @@ public class FreezeFighter implements KeyListener {
                     }
                 };
                 t.start();
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 kyx = "r";
                 Thread t = new Thread() {
@@ -554,6 +570,49 @@ public class FreezeFighter implements KeyListener {
         }
         y = 500;
     }
+    
+    public void drawDownPunch() {
+        Thread t = new Thread() {
+            public void run() {
+                int iii = 0;
+                while(true) {
+                    try {
+
+                        if(iii == 0) {
+                            Image i1 = ImageIO.read(getClass().getResourceAsStream("pdown1.png"));
+                            g.drawImage(i1, x, y, 160, 300, null);
+                        } else if(iii == 1) {
+                            Image i2 = ImageIO.read(getClass().getResourceAsStream("pdown2.png"));
+                            g.drawImage(i2, x, y, 160, 300, null);
+                        }
+                        iii++;
+                        Thread.sleep(4000);
+                        Random rnd = new Random();
+                        int a = rnd.nextInt(5);
+                        if (a == 0) {
+                            drawBlockEnemy();
+                        } else if (a == 1) {
+                            //drawBlockDownEnemy();
+                        }
+                        if (!isBlockingEnemy) {
+                            if (x >= x2 - 115 && x <= x2 + 160 - 115
+                                    && y >= y2 && y <= y2 + 300) {
+                                livesEnemy -= 6;
+                            }
+                        }
+                        if(iii == 2)
+                        {
+                            kuk = "";
+                            return;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        t.start();
+    }
 
     public void drawEnemy() {
         Thread t = new Thread() {
@@ -585,53 +644,62 @@ public class FreezeFighter implements KeyListener {
                         switch (v) {
                             case 0:
                                 isBlockingEnemy = false;
+                                enemyAggressing = true;
                                 drawStanderEnemy();
                                 enemyAggressing = false;
+                                done = true;
+                                bbbb = 0;
                                 break;
                             case 1:
-                                if (done) {
+                                if (done && bbbb == 0) {
                                     done = false;
                                     isBlockingEnemy = false;
                                     enemyAggressing = true;
-                                    drawStanderEnemy();
                                     drawFireballStanceEnemy();
-                                    enemyAggressing = true;
+                                    enemyAggressing = false;
                                 }
                                 break;
                             case 2:
                                 isBlockingEnemy = false;
+                                enemyAggressing = true;
                                 drawStanderEnemy();
                                 enemyAggressing = false;
+                                done = true;
+                                bbbb = 0;
                                 break;
                             case 3:
-                                if (done) {
+                                if (done && bbbb == 0) {
                                     done = false;
                                     isBlockingEnemy = false;
-                                    drawKickEnemy();
                                     enemyAggressing = true;
+                                    drawKickEnemy();
+                                    enemyAggressing = false;
                                 }
                                 break;
                             case 4:
-                                if (done) {
+                                if (done && bbbb == 0) {
                                     done = false;
                                     isBlockingEnemy = false;
-                                    drawEnemyPunch();
                                     enemyAggressing = true;
+                                    drawEnemyPunch();
+                                    enemyAggressing = false;
                                 }
                                 break;
                             case 5:
                             case 6:
-                                if (done) {
+                                if (done && bbbb == 0) {
                                     done = false;
                                     isBlockingEnemy = false;
+                                    enemyAggressing = true;
                                     drawKickEnemy();
                                     enemyAggressing = true;
                                 }
                                 break;
                             case 7:
-                                if (done) {
+                                if (done && bbbb == 0) {
                                     done = false;
                                     isBlockingEnemy = false;
+                                    enemyAggressing = true;
                                     Thread tt1 = new Thread() {
                                         public void run() {
                                             makeSound2("shoryuken.wav");
@@ -659,6 +727,7 @@ public class FreezeFighter implements KeyListener {
                                                     y2 = 500;
                                                     babysitter3 = 0;
                                                     done = true;
+                                                    enemyAggressing = false;
                                                     return;
                                                 }
                                                 try {
@@ -674,51 +743,57 @@ public class FreezeFighter implements KeyListener {
                                             }
                                         }
                                     };
-                                    enemyAggressing = true;
                                     tt1.start();
                                 }
                                 break;
                             case 8:
-                                if(done && 1==2) {
+                                if(done) {
                                     isBlockingEnemy = false;
-                                    enemyAggressing = false;
+                                    enemyAggressing = true;
                                     done = false;
                                     try {
                                         makeSound2("hkick.wav");
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                    while (true) {
-                                        if (bbbb > 0 && bbbb < 40) {
-                                            drawHKick1Enemy();
+                                    Thread ttt = new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            while (!done) {
+                                                if (bbbb > 0 && bbbb < 40) {
+                                                    drawHKick1Enemy();
+                                                }
+                                                if (bbbb > 40 && bbbb < 80) {
+                                                    drawHKick2Enemy();
+                                                }
+                                                if (bbbb > 80 && bbbb < 120) {
+                                                    drawHKick3Enemy();
+                                                }
+                                                try {
+                                                    Thread.sleep(1);
+                                                } catch (Exception e) {
+                                                }
+                                                x2 -= 4;
+                                                bbbb++;
+                                                if (bbbb > 120) {
+                                                    bbbb = 0;
+                                                    yx = "";
+                                                    y2 = 500;
+                                                    done = true;
+                                                    enemyAggressing = false;
+
+                                                }
+                                            }
                                         }
-                                        if (bbbb > 40 && bbbb < 80) {
-                                            drawHKick2Enemy();
-                                        }
-                                        if (bbbb > 80 && bbbb < 120) {
-                                            drawHKick3Enemy();
-                                        }
-                                        try {
-                                            Thread.sleep(1);
-                                        } catch (Exception e) {
-                                        }
-                                        x2 -= 1;
-                                        bbbb++;
-                                        if (bbbb > 125) {
-                                            bbbb = 0;
-                                            yx = "";
-                                            y2 = 500;
-                                            done = true;
-                                            enemyAggressing = true;
-                                            return;
-                                        }
-                                    }
+                                    });
+                                    ttt.start();
                                 }
                                 break;
                             case 9:
-                                if(done) {
+                                if(done && bbbb == 0) {
                                     done = false;
                                     isBlockingEnemy = false;
+                                    enemyAggressing = true;
                                     drawShortEnemy();
                                     enemyAggressing = false;
                                 }
@@ -777,7 +852,7 @@ public class FreezeFighter implements KeyListener {
                         }
                         Thread.sleep(50);
                         fb.move();
-                        g.setColor(Color.white);
+                        g.setColor(Color.red);
                         g.fillOval(fb.x, fb.y, 50, 50);
                         if (fb.x > 1070) {
                             fb = null;
@@ -821,7 +896,7 @@ public class FreezeFighter implements KeyListener {
                         }
                         Thread.sleep(50);
                         fb2.moveEnemy();
-                        g.setColor(Color.white);
+                        g.setColor(Color.blue);
                         g.fillOval(fb2.x, fb2.y, 50, 50);
                         if (fb2.x < -70) {
                             fb2 = null;
@@ -1476,6 +1551,7 @@ public class FreezeFighter implements KeyListener {
         };
         d.start();
 
+        j.setExtendedState(j.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         try {
@@ -1486,7 +1562,7 @@ public class FreezeFighter implements KeyListener {
     }
 
     public void drawScoreLives() {
-        g.setColor(Color.white);
+        g.setColor(Color.green);
         g.fillRect(10 + (4 * (100 - livesFriend)), 10, 4 * livesFriend, 30);
         g.fillRect(450, 10, 4
                 * livesEnemy, 30);
